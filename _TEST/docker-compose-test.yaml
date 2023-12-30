@@ -1,0 +1,38 @@
+version: "3.7"
+
+# this is only for running tests
+
+services:
+
+  fastapi-skeleton-app:
+    container_name: fastapi-skeleton-container
+    image: fastapi-skeleton-image
+    depends_on:
+      - postgresdb-test
+    environment:
+      - STAGE=test
+      - POSTGRES_URL=postgres:postgres@postgresdb-test:5432
+    command: >
+      sh -c "python -m pytest -p pytest_asyncio"
+    volumes:
+      - ../:/project/
+    networks:
+      - testing
+
+
+  postgresdb-test:
+    image: postgres:latest
+    container_name: postgresdb-test
+    ports:
+      - '5432:5432'
+    environment:
+      - POSTGRES_USER=postgres
+      - POSTGRES_PASSWORD=postgres
+    networks:
+      - testing
+
+
+networks:
+  testing:
+    name: fastapi-skeleton-testing
+    driver: bridge

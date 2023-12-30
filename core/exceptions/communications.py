@@ -1,0 +1,2 @@
+class CommunicationsException(Exception):
+    pass

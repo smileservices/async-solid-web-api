@@ -1,0 +1,16 @@
+version: "3.7"
+
+services:
+
+  postgresdb:
+    image: postgres:latest
+    container_name: postgresdb
+    ports:
+      - '5432:5432'
+    environment:
+      - POSTGRES_USER=${PG_USER}
+      - POSTGRES_PASSWORD=${PG_PASS}
+      - POSTGRES_DB=${PG_DB}
+    volumes:
+      - ../POSTGRES/:/var/lib/postgresql/data
+    restart: always

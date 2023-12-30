@@ -1,0 +1,10 @@
+FROM python:3.10.0-alpine
+
+RUN apk add bash curl postgresql-dev g++ gcc python3-dev musl-dev git openssh-server openssh-client&&\
+    pip3 install psycopg2-binary
+
+WORKDIR /project/
+COPY requirements.txt ./
+
+# remove cache
+RUN python3 -m pip install -r requirements.txt
