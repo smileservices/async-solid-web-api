@@ -107,8 +107,6 @@ stuff a lot of things into the FastAPI handlers.
 
 # Production Deployment
 
-You can run it either 
-
 **run using gunicorn**
 For production deployment, start the application using gunicorn uvicorn workers. 
 Set the number of workers in relation to available cores (1 worker per core). The best practice is to manage
