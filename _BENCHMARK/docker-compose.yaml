@@ -13,11 +13,12 @@ services:
   fastapi-skeleton-app:
     container_name: fastapi-skeleton-app
     image: fastapi-skeleton-benchmark-image
+    environment:
+      - POSTGRES_URL="postgresql+asyncpg://postgres:postgres@postgresdb-benchmark:5432/live"
     depends_on:
       - postgresdb-benchmark
     command: >
           sh -c "_BENCHMARK/gunicorn_start.sh"
-    #      sh -c "python -m uvicorn api.main:app --host 0.0.0.0 --port 8000"
     volumes:
       - ../:/project/
     networks:

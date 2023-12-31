@@ -27,8 +27,8 @@ def setup(config: ConfigService) -> ApiDependencies:
 
 
 config_service = ConfigService(
-    _secret_manager=FileSecret(env_file_path="api/.env"),
-    _secure_manager=EnvironSecret()
+    _secret_manager=EnvironSecret(),
+    _secure_manager=FileSecret(env_file_path="api/.env")
 )
 
 deps = setup(config_service)
