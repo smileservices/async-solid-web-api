@@ -63,6 +63,7 @@ async def test_can_add(test_deps):
     async for actual_deps in test_deps:
         acc = AccountSerializer(
             id='somerandomid',
+            order=10,
             meta=dict(prop="one")
         )
         await app_accounts.interface.new_account(actual_deps, acc)
@@ -72,4 +73,5 @@ async def test_can_add(test_deps):
         res = q.all()
     assert len(res) == 1
     assert res[0][0] == "somerandomid"
-    assert res[0][1] == dict(prop="one")
+    assert res[0][1] == 10
+    assert res[0][2] == dict(prop="one")
