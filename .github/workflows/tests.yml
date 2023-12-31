@@ -41,7 +41,7 @@ jobs:
       env:
         POSTGRES_URL: "postgres:postgres@localhost:5432"
       run: |
-        python -m pytest tests --cov=./ --cov-report=xml -p pytest_asyncio
+        python -m pytest --cov=./ --cov-report=xml -p pytest_asyncio
 
     - name: Coveralls
       env:
