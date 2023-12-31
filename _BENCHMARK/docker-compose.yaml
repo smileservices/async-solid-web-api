@@ -1,0 +1,46 @@
+version: "3.9"
+
+services:
+
+  nginx-benchmark:
+    build: nginx/
+    ports:
+      - "80:80"
+    restart: always
+    networks:
+      - benchmark
+
+  fastapi-skeleton-app:
+    container_name: fastapi-skeleton-app
+    image: fastapi-skeleton-benchmark-image
+    depends_on:
+      - postgresdb-benchmark
+    command: >
+          sh -c "_BENCHMARK/gunicorn_start.sh"
+    #      sh -c "python -m uvicorn api.main:app --host 0.0.0.0 --port 8000"
+    volumes:
+      - ../:/project/
+    networks:
+      - benchmark
+    cpu_quota: 50000
+    mem_limit: 1g
+
+  postgresdb-benchmark:
+    image: postgres:latest
+    container_name: postgresdb-benchmark
+    ports:
+      - '5432:5432'
+    environment:
+      - POSTGRES_USER=${PG_USER}
+      - POSTGRES_PASSWORD=${PG_PASS}
+      - POSTGRES_DB=${PG_DB}
+    volumes:
+      - ../POSTGRES_BENCHMARK:/var/lib/postgresql/data
+    restart: always
+    networks:
+      - benchmark
+
+networks:
+  benchmark:
+    name: fastapi-skeleton-benchmark
+    driver: bridge

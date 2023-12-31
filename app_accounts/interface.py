@@ -11,6 +11,7 @@ async def new_account(
     async with deps.repository.start_session() as s:
         instance = Account(
             id=acc.id,
+            order=acc.order,
             meta=acc.meta
         )
         await deps.repository.add(s, instance)
@@ -28,9 +29,10 @@ async def get_account(
         return AccountSerializer(**asdict(acc))
 
 
-async def get_accounts(
-        deps: AccountDependencies
+async def get_accounts_by_order(
+        deps: AccountDependencies,
+        order: int
 ) -> [AccountSerializer]:
     async with deps.repository.start_session() as s:
-        accs = await deps.repository.filter(s, Account)
+        accs = await deps.repository.filter(s, Account, order=order)
         return [AccountSerializer(**asdict(acc)) for acc in accs]

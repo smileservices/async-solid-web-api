@@ -3,14 +3,16 @@ from api.bootstrap import deps
 import app_accounts.interface
 import app_accounts.serializers
 import string
-from random import choice
+from random import choice, randint
+
 
 app = FastAPI()
 
 
 @app.get("/")
-async def all_accounts():
-    accounts = await app_accounts.interface.get_accounts(deps.account_deps)
+async def filter():
+    order_should_be = randint(0, 100)
+    accounts = await app_accounts.interface.get_accounts_by_order(deps.account_deps, order_should_be)
     return accounts
 
 
@@ -18,6 +20,7 @@ async def all_accounts():
 async def new_account():
     acc = app_accounts.serializers.AccountSerializer(
         id="".join([choice(string.ascii_letters) for _ in range(10)]),
+        order=randint(0,100),
         meta=dict(verified=False, age=choice(range(15, 70)))
     )
     await app_accounts.interface.new_account(deps.account_deps, acc)

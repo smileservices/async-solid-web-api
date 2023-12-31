@@ -1,10 +1,10 @@
-version: "3.7"
+version: "3.9"
 
 services:
 
-  postgresdb:
+  postgresdb-dev:
     image: postgres:latest
-    container_name: postgresdb
+    container_name: postgresdb-dev
     ports:
       - '5432:5432'
     environment:
@@ -12,5 +12,5 @@ services:
       - POSTGRES_PASSWORD=${PG_PASS}
       - POSTGRES_DB=${PG_DB}
     volumes:
-      - ../POSTGRES/:/var/lib/postgresql/data
+      - ../POSTGRES:/var/lib/postgresql/data
     restart: always

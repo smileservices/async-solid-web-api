@@ -105,6 +105,7 @@ venv/
 ENV/
 env/
 POSTGRES/
+POSTGRES_BENCHMARK/
 env.bak/
 venv.bak/
 
