@@ -1,3 +1,5 @@
+[![Build Status](https://github.com/smileservices/async-solid-web-api/actions/workflows/tests.yml/badge.svg)](https://github.com/smileservices/async-solid-web-api/actions)
+[![Coverage Status](https://coveralls.io/repos/github/smileservices/async-solid-web-api/badge.svg?branch=master)](https://coveralls.io/github/smileservices/async-solid-web-api?branch=master)
 # SOLID FastAPI Skeleton API
 
 Presenting production ready SOLID API architecture with python/FastAPI. 
