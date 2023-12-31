@@ -34,7 +34,7 @@ This is the core shared library. It contains all the commonly used services, rep
 It's used inside the model components and the container app as a python package.
 
 It's the top most depencency component:
-![dependencies and interfaces diagram](https://drive.google.com/uc?export=view&id=1f__V3hlJ-SS2pFY3MoyGUHJuPGk7TJgx)
+![dependencies and interfaces diagram](https://raw.githubusercontent.com/smileservices/async-solid-web-api/master/components.png)
 
 <hr>
 
