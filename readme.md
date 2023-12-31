@@ -18,16 +18,23 @@ as it can have special methods/queries
 3. **Web API Container** - ties up together the app by instantiating project wide dependencies and handling http requests
 and calling the application component logic
 
+# Benchmarks (async fastapi vs syncfastapi)
+There are 2 reports made using Locust by running in production mode the async version and the sync version of this.
+Read both the reports at _BENCHMARK/reports. Both projects were dockerized, served using Gunicorn and Nginx.
+Configuration for nginx was the same for both, but gunicorn used different setups:
+1. async app: 1 uvicorn worker (best results)
+2. sync app: 4 uvicorn workers (best results)
+Note that running FastApi with gunicorn can **only** be using the uvicorn worker type.
+
+   
+
 # CORE
 
 This is the core shared library. It contains all the commonly used services, repositories and interfaces.
 It's used inside the model components and the container app as a python package.
 
 It's the top most depencency component:
-
 ![dependencies and interfaces diagram](https://drive.google.com/uc?export=view&id=1f__V3hlJ-SS2pFY3MoyGUHJuPGk7TJgx)
-
-## Parts and pieces
 
 <hr>
 
@@ -76,7 +83,7 @@ For tests we use `pytest` and they are run using docker-compose
 
 
 ## Enviroment Variables
-We use `.env` file that sits inside the application folder `/app`. Can use any type of secret service, just create a new SecretService in Core.
+We use `.env` file that sits inside the application folder `/api`. Can use any type of secret service, just create a new SecretService in Core.
 
 
 ## Development & User Guide
@@ -97,3 +104,15 @@ stuff a lot of things into the FastAPI handlers.
 - run `make test` will create the docker image for running the app under docker-compose
 - set your python interpreter to `_DOCKER/docker-compose.yml` file for the service `fast-api-skeleton`
 - can use breakpoints in PyCharm
+
+# Production Deployment
+
+You can run it either 
+
+**run using gunicorn**
+For production deployment, start the application using gunicorn uvicorn workers. 
+Set the number of workers in relation to available cores (1 worker per core). The best practice is to manage
+gunicorn process using `supervisord`. Don't forget to set up logging paths.
+
+**nginx as reverse proxy**
+Use nginx as a reverse proxy to direct traffic onto gunicorn. Don't forget to set up logging paths.
