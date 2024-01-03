@@ -1,27 +1,42 @@
 from fastapi import FastAPI
-from api.bootstrap import deps
-import app_accounts.interface
-import app_accounts.serializers
-import string
-from random import choice, randint
+from fastapi.templating import Jinja2Templates
+from fastapi.requests import Request
 
+from api.benchmark.routes import router as benchmark_router
+from api.auth.routes import router as auth_router
+from api.bootstrap import deps, config_service
+
+templates = Jinja2Templates(directory="frontend/html")
 
 app = FastAPI()
 
+app.include_router(router=benchmark_router, prefix='/benchmark')
+app.include_router(router=auth_router, prefix='/auth')
+
 
 @app.get("/")
-async def filter():
-    order_should_be = randint(0, 100)
-    accounts = await app_accounts.interface.get_accounts_by_order(deps.account_deps, order_should_be)
-    return accounts
-
-
-@app.post("/")
-async def new_account():
-    acc = app_accounts.serializers.AccountSerializer(
-        id="".join([choice(string.ascii_letters) for _ in range(10)]),
-        order=randint(0,100),
-        meta=dict(verified=False, age=choice(range(15, 70)))
+async def homepage(request: Request):
+    client_id = config_service.get_secure("TRUSTNET_CLIENT_ID")
+    redirect_uri = config_service.get_secure("TRUSTNET_REDIRECT_URL")
+    signup_url = f"https://auth.trustnet.app/authorize?client_id={client_id}&response_type=code&redirect_uri={redirect_uri}&scope=openid"
+    return templates.TemplateResponse(
+        "main.html",
+        {
+            "STATIC_ROUTE": config_service.get("STATIC_ROUTE"),
+            "signup_url": signup_url,
+            "request": request
+        }
     )
-    await app_accounts.interface.new_account(deps.account_deps, acc)
-    return acc
+
+
+# todo verify access jwt and block access only to users
+
+@app.get("/user")
+async def user(request: Request):
+    return templates.TemplateResponse(
+        "user.html",
+        {
+            "STATIC_ROUTE": config_service.get("STATIC_ROUTE"),
+            "request": request
+        }
+    )
