@@ -14,3 +14,11 @@ services:
     volumes:
       - ../POSTGRES:/var/lib/postgresql/data
     restart: always
+
+  nginx-static:
+    build: nginx/
+    ports:
+      - "8010:80"
+    volumes:
+      - ../frontend/static/:/www-data
+    restart: always
