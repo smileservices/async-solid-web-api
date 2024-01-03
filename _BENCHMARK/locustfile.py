@@ -3,9 +3,9 @@ from locust import HttpUser, task
 
 class RunLoad(HttpUser):
     @task
-    def get_all(self):
-        self.client.get("/")
+    def filter_random(self):
+        self.client.get("/benchmark/filter")
 
     @task
-    def create(self):
-        self.client.post("/")
+    def create_random(self):
+        self.client.post("/benchmark/create")
