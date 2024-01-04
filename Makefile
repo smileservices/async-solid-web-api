@@ -14,3 +14,5 @@ build-benchmark:
 run-benchmark:
 	docker compose -f _BENCHMARK/docker-compose.yaml up -d
 	locust -f _BENCHMARK/locustfile.py -H http://localhost
+run-app:
+	python -m uvicorn api.main:app
