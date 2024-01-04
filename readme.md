@@ -1,34 +1,49 @@
 [![Build Status](https://github.com/smileservices/async-solid-web-api/actions/workflows/tests.yml/badge.svg)](https://github.com/smileservices/async-solid-web-api/actions)
 [![Coverage Status](https://coveralls.io/repos/github/smileservices/async-solid-web-api/badge.svg?branch=master)](https://coveralls.io/github/smileservices/async-solid-web-api?branch=master)
+
 # SOLID FastAPI Skeleton API
 
-Presenting production ready SOLID API architecture with python/FastAPI. 
+Presenting production ready SOLID API architecture with python/FastAPI.
 This skeleton project brings together in an oppinionated way OOP patterns
 in order to build a production ready web API.
 
 # Concepts
 
-- Following closely on Clean Architecture concepts as described in [the book by Robert C. Martin](https://www.amazon.com/Clean-Architecture-Craftsmans-Software-Structure/dp/0134494164)
+- Following closely on Clean Architecture concepts as described
+  in [the book by Robert C. Martin](https://www.amazon.com/Clean-Architecture-Craftsmans-Software-Structure/dp/0134494164)
 - [SOLID principles](https://en.wikipedia.org/wiki/SOLID) are central
 - Layered architecture using vendor-agnostic pluggable services (data layer, message queue, etc)
 - CI/CD with githubactions
 
 A web API built with this blueprint has these parts:
+
 1. **Core library** - all interfaces and services that implement those so that application components can easily share
 2. **Application components** - actual implementation of the business logic. Each components extends its own repository
-as it can have special methods/queries
-3. **Web API Container** - ties up together the app by instantiating project wide dependencies and handling http requests
-and calling the application component logic
+   as it can have special methods/queries
+3. **Web API Container** - ties up together the app by instantiating project wide dependencies and handling http
+   requests
+   and calling the application component logic
+
+# Available Features
+
+1. Async SQL database operations
+2. User Accounts relying on TrustNet.app OpenID connect provider
+3. Secure JWT based authentication with protected routes
+4. Support for alembic migration
+5. Dockerized tests
+6. GithubActions testing flow
+7. Logging Setup
+8. Load testing using `locust`
 
 # Benchmarks (async fastapi vs syncfastapi)
+
 There are 2 reports made using Locust by running in production mode the async version and the sync version of this.
 Read both the reports at _BENCHMARK/reports. Both projects were dockerized, served using Gunicorn and Nginx.
 Configuration for nginx was the same for both, but gunicorn used different setups:
+
 1. async app: 1 uvicorn worker (best results)
 2. sync app: 4 uvicorn workers (best results)
-Note that running FastApi with gunicorn can **only** be using the uvicorn worker type.
-
-   
+   Note that running FastApi with gunicorn can **only** be using the uvicorn worker type.
 
 # CORE
 
@@ -41,12 +56,15 @@ It's the top most depencency component:
 <hr>
 
 **core.services**
+
 - Contains Abstract interfaces and adapters to services like google secrets, rabbitmq, etc
 
 **core.interfaces**
+
 - Contains services like Secrets, Message Queue, that implement the abstract interfaces
 
 **core.repository**
+
 - Contains data layer interfaces and adapters
 - Uses [data-persistance-repository](https://github.com/smileservices/data_persistence_repository) library
 - If you want to use noSql databases, make your own repository that implements the repository interface
@@ -64,12 +82,12 @@ Interface exposes all ways that it's possible to interract with the component. I
 layer (the container) to inject the required dependency.
 
 # Web API Container
+
 - dependencies.py - declares the API dependencies
 - bootstrap.py - instantiates the API dependencies, config service
 - main.py - entrypoint of the web application
 - Can be FastAPI, Flask, whatever
 - use an async supporting web server for working async
-
 
 ## Alembic Migrations
 
@@ -83,10 +101,10 @@ For tests we use `pytest` and they are run using docker-compose
 
 - execute `make test` :: runs the test suite inside the docker context
 
-
 ## Enviroment Variables
-We use `.env` file that sits inside the application folder `/api`. Can use any type of secret service, just create a new SecretService in Core.
 
+We use `.env` file that sits inside the application folder `/api`. Can use any type of secret service, just create a new
+SecretService in Core.
 
 ## Development & User Guide
 
@@ -110,7 +128,7 @@ stuff a lot of things into the FastAPI handlers.
 # Production Deployment
 
 **run using gunicorn**
-For production deployment, start the application using gunicorn uvicorn workers. 
+For production deployment, start the application using gunicorn uvicorn workers.
 Set the number of workers in relation to available cores (1 worker per core). The best practice is to manage
 gunicorn process using `supervisord`. Don't forget to set up logging paths.
 
