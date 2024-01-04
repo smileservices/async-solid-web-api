@@ -51,7 +51,7 @@ def decode_hmac_jwt(secret, token, verify_callback: Optional[Callable] = None, a
     try:
         decoded = jwt.decode(token, secret, algorithms=[algo])
     except JWTError as e:
-        raise BadTokenException('Could not decode')
+        raise BadTokenException(f'Could not decode: {str(e)}')
     if verify_callback and not verify_callback(decoded):
         raise BadTokenException('JWT content verification fail')
     return decoded

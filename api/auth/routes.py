@@ -1,3 +1,5 @@
+import logging
+
 from fastapi import APIRouter, Request
 from fastapi.responses import RedirectResponse
 from fastapi.templating import Jinja2Templates
@@ -13,6 +15,8 @@ from api.bootstrap import deps, config_service
 
 router = APIRouter(tags=["auth"])
 templates = Jinja2Templates(directory="frontend/html")
+
+logger = logging.getLogger(__name__)
 
 
 @router.get("/oidc")
@@ -51,6 +55,7 @@ async def handle_code(
                 )
 
         # decode id token and check signature
+        # this should be cached
         async with session.get(provider_config["jwks_uri"]) as jwks_res:
             jwks_res_dict = await jwks_res.json()
             decoded_id_token = decode_signed_jwt(jwks_res_dict, tokens['id_token'], iss="trustnet.app")
@@ -58,6 +63,7 @@ async def handle_code(
         # check if account already exists
         try:
             account = await acc_interface.get_account(deps.account_deps, acc_id=decoded_id_token['sub'])
+            logger.info("Existing user signed-in.")
         except ValueError:
             # get userinfo from oidc provider
             auth_header = f'{tokens["token_type"]} {tokens["access_token"]}'
@@ -72,6 +78,8 @@ async def handle_code(
                     meta=user_info
                 )
                 account = await acc_interface.new_account(deps.account_deps, acc_ser)
+            logger.info("New account created.")
+
 
     # create response
     response = RedirectResponse(
@@ -92,11 +100,22 @@ async def handle_code(
         secure=True,
         httponly=True,
         samesite="lax",
-        domain=f'{config_service.get("DOMAIN")}'
     )
+    response.set_cookie(key='authenticated', value="1", secure=True)
     return response
 
 
 @router.get("/logout")
 async def logout():
-    return RedirectResponse(url="/")
+    # delete the cookie
+    response = RedirectResponse(url="/")
+    response.set_cookie(
+        key='access_token',
+        value="",
+        secure=True,
+        httponly=True,
+        samesite="lax",
+        expires=0
+    )
+    response.set_cookie(key='authenticated', value="0", secure=True, expires=0)
+    return response
