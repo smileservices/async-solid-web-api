@@ -1,0 +1,18 @@
+{% extends "base.html" %}
+
+{% block main %}
+<main class="homepage" id="oidc_authorize">
+    <div class="top">
+        <div class="intro">
+            <div class="logo">OIDC Client</div>
+            <div class="cta">
+                <p>OpenID Connect provider: handling token response</p>
+            </div>
+        </div>
+        <a class="floating-button" href="/">Re-Authorize</a>
+        <div class="alert alert-danger">
+            {{ error }}
+        </div>
+    </div>
+</main>
+{% endblock %}

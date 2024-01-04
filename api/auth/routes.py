@@ -95,3 +95,8 @@ async def handle_code(
         domain=f'{config_service.get("DOMAIN")}'
     )
     return response
+
+
+@router.get("/logout")
+async def logout():
+    return RedirectResponse(url="/")

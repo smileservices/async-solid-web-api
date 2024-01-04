@@ -1,14 +1,11 @@
 {% extends "base.html" %}
 
 {% block main %}
-<main class="homepage" id="oidc_authorize">
-    <div class="top">
-        <div class="intro">
-            <div class="logo">User Section</div>
-            <div class="cta">
-                <p>You're logged in</p>
-            </div>
-        </div>
+<main class="user">
+    <div class="card">
+        <h1>User Section</h1>
+        <p>You're logged in</p>
+        <a href="/auth/logout" class="btn danger">Logout</a>
     </div>
 </main>
 {% endblock %}
